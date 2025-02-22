@@ -1,0 +1,488 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}Sellerie Super Confort - Artisanat & Excellence{% endblock %}
+
+{% block content %}
+<!-- Hero Section avec Carrousel -->
+<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" style="margin-top: 0px; height: 70vh;">
+    <div class="carousel-inner h-100">
+        <div class="carousel-item active h-100" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{% static 'images/2.png' %}'); background-size: cover; background-position: center;">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center">
+                    <div class="col-lg-8">
+                        <div class="hero-content p-5 rounded" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);">
+                            <h1 class="display-3 fw-bold mb-4 text-white" style="font-family: 'Playfair Display', serif;">L'Art de la Sellerie</h1>
+                            <p class="lead mb-4 text-white">Excellence artisanale et confort optimal pour votre équitation</p>
+                            <div class="d-flex gap-3">
+                                <a href="/catalogue" class="btn btn-lg px-3 py-3" style="background: linear-gradient(45deg, #8B4513, #D4AF37); color: white; border: none;">
+                                    Catalogue
+                                </a>
+                                <a href="/about" class="btn btn-lg btn-outline-light px-4 py-3">
+                                    Infos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item h-100" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/api/placeholder/1920/1080'); background-size: cover; background-position: center;">
+            <!-- Contenu similaire pour la deuxième slide -->
+        </div>
+    </div>
+</div>
+
+<!-- Section Expertise Améliorée -->
+<section id="expertise" class="py-5" style="background: linear-gradient(135deg, #FDF5E6, #F5DEB3);">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <span class="text-uppercase fw-bold" style="color: #8B4513; letter-spacing: 3px;">Notre Savoir-faire</span>
+            <h2 class="display-4 mt-3 mb-4 position-relative d-inline-block" style="color: #2C1810; font-family: 'Playfair Display', serif;">
+                Une Excellence Reconnue
+                <div class="position-absolute w-100" style="height: 4px; background: linear-gradient(90deg, #8B4513, #D4AF37); bottom: -10px;"></div>
+            </h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="expertise-card p-4 rounded-lg bg-white shadow-lg hover-lift">
+                    <div class="icon-wrapper mb-4" style="height: 80px;">
+                        <i class="fas fa-horse fa-3x" style="color: #8B4513;"></i>
+                    </div>
+                    <h3 class="h5 fw-bold mb-3">Artisanat d'Excellence</h3>
+                    <p class="text-muted">Maîtrise des techniques traditionnelles de sellerie, transmises de génération en génération pour un résultat exceptionnel.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="expertise-card p-4 rounded-lg bg-white shadow-lg hover-lift">
+                    <div class="icon-wrapper mb-4" style="height: 80px;">
+                        <i class="fas fa-medal fa-3x" style="color: #D4AF37;"></i>
+                    </div>
+                    <h3 class="h5 fw-bold mb-3">Qualité Supérieure</h3>
+                    <p class="text-muted">Sélection rigoureuse des meilleurs cuirs et matériaux pour garantir durabilité et confort optimal.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="expertise-card p-4 rounded-lg bg-white shadow-lg hover-lift">
+                    <div class="icon-wrapper mb-4" style="height: 80px;">
+                        <i class="fas fa-handshake fa-3x" style="color: #8B4513;"></i>
+                    </div>
+                    <h3 class="h5 fw-bold mb-3">Service Sur-Mesure</h3>
+                    <p class="text-muted">Accompagnement personnalisé et adaptation parfaite à vos besoins spécifiques et ceux de votre monture.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Collection Améliorée -->
+<section id="collection" class="py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <span class="text-uppercase fw-bold" style="color: #8B4513; letter-spacing: 3px;">Nos Produits</span>
+            <h2 class="display-4 mt-3 mb-4">Collection Exclusive</h2>
+        </div>
+        <div class="row g-4">
+            {% for product in featured_products %}
+            <div class="col-lg-4 col-md-6">
+                <div class="product-card bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="product-image position-relative">
+                        <img src="{{ product.image.url }}" class="w-100" alt="{{ product.name }}" style="height: 300px; object-fit: cover;">
+                        <div class="product-ribbon">Exclusif</div>
+                    </div>
+                    <div class="product-info p-4">
+                        
+                        <h3 class="h5 mb-3">{{ product.name }}</h3>
+                        <div class="product-buttons">
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-product btn-details">
+                                <i class="fas fa-info-circle me-2"></i>Détails
+                            </a>
+                            
+                            <a href="{% url 'payment' product.id %}" class="btn btn-product btn-buy">
+                                <i class="fas fa-shopping-bag me-2"></i>Acheter
+                            </a>
+                            <button onclick="addToCart('{{ product.id }}')" class="btn btn-product btn-cart">
+                                <i class="fas fa-shopping-cart mr-2"> ajouter</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Section Pourquoi Nous Choisir -->
+<section class="py-5" style="background: linear-gradient(135deg, #2C1810, #8B4513);">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="display-4 text-white mb-4">Pourquoi Nous Choisir</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="choice-card text-center text-white p-4">
+                    <div class="choice-icon mb-4">
+                        <i class="fas fa-star fa-3x" style="color: #D4AF37;"></i>
+                    </div>
+                    <h4 class="h5 mb-3">20+ Ans d'Expérience</h4>
+                    <p class="text-light">Excellence artisanale reconnue dans toute l'Europe</p>
+                    <div class="stat-number">2000+</div>
+                    <div class="stat-label">Clients Satisfaits</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="choice-card text-center text-white p-4">
+                    <div class="choice-icon mb-4">
+                        <i class="fas fa-trophy fa-3x" style="color: #D4AF37;"></i>
+                    </div>
+                    <h4 class="h5 mb-3">Qualité Premium</h4>
+                    <p class="text-light">Matériaux nobles sélectionnés avec soin</p>
+                    <div class="stat-number">150+</div>
+                    <div class="stat-label">Récompenses</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="choice-card text-center text-white p-4">
+                    <div class="choice-icon mb-4">
+                        <i class="fas fa-users fa-3x" style="color: #D4AF37;"></i>
+                    </div>
+                    <h4 class="h5 mb-3">Service Client</h4>
+                    <p class="text-light">Support personnalisé 7j/7</p>
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Disponibilité</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="choice-card text-center text-white p-4">
+                    <div class="choice-icon mb-4">
+                        <i class="fas fa-globe fa-3x" style="color: #D4AF37;"></i>
+                    </div>
+                    <h4 class="h5 mb-3">Présence Internationale</h4>
+                    <p class="text-light">Service dans toute l'Europe</p>
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Pays Desservis</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Témoignages -->
+<section class="testimonials py-5" style="background: linear-gradient(135deg, #FDF5E6, #F5DEB3);">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <span class="text-uppercase fw-bold" style="color: #8B4513; letter-spacing: 3px;">Témoignages</span>
+            <h2 class="display-4 mt-3">Ce que disent nos clients</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="testimonial-card bg-white p-4 rounded-lg shadow-lg">
+                    <div class="testimonial-header d-flex align-items-center mb-4">
+                        <div class="testimonial-image">
+                            <img src="/api/placeholder/60/60" class="rounded-circle" alt="Client">
+                        </div>
+                        <div class="testimonial-info ms-3">
+                            <h5 class="mb-1">Sophie Laurent</h5>
+                            <p class="text-muted mb-0">Cavalière Professionnelle</p>
+                            <div class="rating text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="testimonial-text mb-0">"Un travail d'exception, ma selle est parfaitement adaptée à mon cheval. Le confort est incomparable et le service client est exemplaire."</p>
+                </div>
+            </div>
+            <!-- Répéter pour d'autres témoignages -->
+        </div>
+    </div>
+</section>
+
+<style>
+/* Styles pour les cartes d'expertise */
+.expertise-card {
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(139, 69, 19, 0.1);
+}
+
+.expertise-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(139, 69, 19, 0.1);
+}
+
+.icon-wrapper {
+    transition: transform 0.3s ease;
+}
+
+.expertise-card:hover .icon-wrapper {
+    transform: scale(1.1);
+}
+
+/* Styles pour les produits */
+.product-card {
+    transition: all 0.3s ease;
+}
+
+.product-ribbon {
+    position: absolute;
+    top: 20px;
+    right: -30px;
+    background: #D4AF37;
+    color: white;
+    padding: 5px 30px;
+    transform: rotate(45deg);
+    font-size: 14px;
+}
+
+.product-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.btn-product {
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.btn-details {
+    background: #F5DEB3;
+    color: #8B4513;
+    border: none;
+}
+
+.btn-buy {
+    background: linear-gradient(45deg, #8B4513, #D4AF37);
+    color: white;
+    border: none;
+}
+
+.btn-cart {
+    background: #2C1810;
+    color: white;
+    border: none;
+}
+
+.btn-product:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Styles pour Why Choose Us */
+.choice-card {
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+}
+
+.choice-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255,255,255,0.15);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #D4AF37;
+    margin-top: 1rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+}
+
+/* Styles pour les témoignages */
+.testimonial-card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(139, 69, 19, 0.1);
+}
+
+.testimonial-image img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.rating {
+    font-size: 14px;
+}
+</style>
+
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showNotification(message, isSuccess = true) {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg ${
+            isSuccess ? 'bg-green-500' : 'bg-red-500'
+        } text-white transition-opacity duration-500`;
+        notification.style.zIndex = '1000';
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                notification.remove();
+            }, 500);
+        }, 3000);
+    }
+
+    function updateCartCount(newCount) {
+        const cartCount = document.getElementById('cart-count');
+        if (cartCount) {
+            // Animation de mise à jour
+            cartCount.style.transform = 'scale(1.2)';
+            cartCount.textContent = newCount;
+            setTimeout(() => {
+                cartCount.style.transform = 'scale(1)';
+            }, 200);
+        }
+    }
+
+    function addToCart(productId) {
+        const csrftoken = getCookie('csrftoken');
+        
+        if (!csrftoken) {
+            showNotification('Erreur CSRF token manquant', false);
+            return;
+        }
+    
+        // Effet visuel sur le bouton cliqué
+        const button = event.currentTarget;
+        button.style.opacity = '0.5';
+        
+        // Animation du panier immédiate
+        const cartIcon = button.querySelector('.fa-shopping-cart');
+        if (cartIcon) {
+            cartIcon.classList.add('animate-bounce');
+        }
+        
+        fetch('/add-to-cart/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                product_id: productId
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur réseau');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Mise à jour du compteur
+                updateCartCount(data.cart_count);
+                
+                // Montrer la notification
+                {% comment %} showNotification('Produit ajouté au panier !', true); {% endcomment %}
+                
+                // Redirection vers la page panier après un court délai
+                setTimeout(() => {
+                    window.location.href = '/cart/';  // Assurez-vous que cette URL correspond à votre configuration URLs
+                }, 1000); // Délai d'une seconde pour voir la notification
+            } else {
+                showNotification(data.error || 'Erreur lors de l\'ajout au panier', false);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showNotification('Erreur lors de l\'ajout au panier', false);
+        })
+        .finally(() => {
+            button.style.opacity = '1';
+            if (cartIcon) {
+                cartIcon.classList.remove('animate-bounce');
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mise à jour automatique lors du changement de tri
+        document.querySelector('select[name="sort"]').addEventListener('change', function() {
+            this.closest('form').submit();
+        });
+
+        // Animation des inputs au focus
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.classList.add('ring-4', 'ring-[#732F2F]/20', 'border-[#732F2F]');
+            });
+            input.addEventListener('blur', function() {
+                this.classList.remove('ring-4', 'ring-[#732F2F]/20', 'border-[#732F2F]');
+            });
+        });
+
+        // Ajouter une transition CSS pour l'animation du compteur
+        const cartCount = document.getElementById('cart-count');
+        if (cartCount) {
+            cartCount.style.transition = 'transform 0.2s ease-in-out';
+        }
+    });
+</script>
+
+
+<script>
+// Initialisation du carrousel
+document.addEventListener('DOMContentLoaded', function() {
+    new bootstrap.Carousel(document.querySelector('#heroCarousel'), {
+        interval: 2000,
+        fade: true
+    });
+});
+
+
+// Animation au scroll
+document.addEventListener('scroll', function() {
+    const elements = document.querySelectorAll('.expertise-card, .product-card');
+    elements.forEach(el => {
+        if (isElementInViewport(el)) {
+            el.classList.add('animate-fadeInUp');
+        }
+    });
+});
+
+function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
+</script>
+{% endblock %}

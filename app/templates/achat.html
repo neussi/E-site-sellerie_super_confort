@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-semibold mb-6">Mon Panier</h1>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Cart Products Table -->
+        <div class="lg:w-3/4">
+            <div class="bg-white rounded-lg shadow">
+                <!-- Desktop Table -->
+                <table class="w-full hidden md:table">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="py-4 px-6 text-left">Produits</th>
+                            <th class="py-4 px-6 text-center">Prix</th>
+                            <th class="py-4 px-6 text-center">Quantité</th>
+                            <th class="py-4 px-6 text-center">Total</th>
+                            <th class="py-4 px-6 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr class="border-b cart-item" data-product-id="{{ item.product.id }}">
+                            <td class="py-4 px-6">
+                                <div class="flex items-center">
+                                    {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                                        class="w-16 h-16 object-cover rounded">
+                                    {% endif %}
+                                    <span class="ml-4">{{ item.product.name }}</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 text-center">{{ item.product.price }}€</td>
+                            <td class="py-4 px-6">
+                                <div class="flex justify-center items-center">
+                                    <button class="quantity-decrease px-2 py-1 bg-gray-200 rounded-l">-</button>
+                                    <input type="number" value="{{ item.quantity }}" min="1"
+                                        class="quantity-input w-16 text-center border-y border-gray-200">
+                                    <button class="quantity-increase px-2 py-1 bg-gray-200 rounded-r">+</button>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 text-center subtotal">{{ item.subtotal }}€</td>
+                            <td class="py-4 px-6 text-center">
+                                <button class="remove-item text-red-500 hover:text-red-700">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Mobile Cards -->
+                <div class="md:hidden">
+                    {% for item in cart_items %}
+                    <div class="p-4 border-b cart-item" data-product-id="{{ item.product.id }}">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                                    class="w-12 h-12 object-cover rounded">
+                                {% endif %}
+                                <span class="ml-2 font-medium truncate max-w-[120px]">
+                                    {{ item.product.name|truncatechars:10 }}
+                                </span>
+                            </div>
+                            <button class="remove-item text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600">Prix:</span>
+                            <span>{{ item.product.price }}€</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600">Quantité:</span>
+                            <div class="flex items-center">
+                                <button class="quantity-decrease px-2 py-1 bg-gray-200 rounded-l">-</button>
+                                <input type="number" value="{{ item.quantity }}" min="1"
+                                    class="quantity-input w-12 text-center border-y border-gray-200">
+                                <button class="quantity-increase px-2 py-1 bg-gray-200 rounded-r">+</button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Total:</span>
+                            <span class="font-bold subtotal">{{ item.subtotal }}€</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="mt-8">
+                <a href="{% url 'catalogue' %}"
+                    class="inline-block bg-[#2F2F2F] text-white px-8 py-4 rounded-xl hover:bg-[#732F2F] transition duration-300 text-lg font-medium">
+                    Ajouter un autre produit
+                </a>
+            </div>
+        </div>
+
+        <!-- Cart Summary -->
+        <div class="lg:w-1/4">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">Résumé</h2>
+                <div class="flex justify-between mb-4">
+                    <span>Total</span>
+                    <span id="cart-total">{{ total }}€</span>
+                </div>
+                <button id="orderButton" class="w-full bg-[#732F2F] text-white py-3 rounded-lg hover:bg-[#5A1E1E] transition-colors">
+                    Commander
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Order Modal -->
+<div id="orderModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg max-w-md w-full shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Informations de livraison</h2>
+        <form id="orderForm" class="space-y-4">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nom complet *</label>
+                <input type="text" name="name" id="name" required 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#732F2F] focus:border-transparent">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                <input type="email" name="email" id="email" required 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#732F2F] focus:border-transparent">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Téléphone *</label>
+                <input type="tel" name="phone" id="phone" required 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#732F2F] focus:border-transparent">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Pays *</label>
+                <select name="country" id="country" required 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#732F2F] focus:border-transparent">
+                    <option value="">Sélectionnez un pays</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Ville *</label>
+                <select name="city" id="city" required 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#732F2F] focus:border-transparent">
+                    <option value="">Sélectionnez d'abord un pays</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Adresse complète *</label>
+                <textarea name="address" id="address" required 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#732F2F] focus:border-transparent"
+                    rows="3"></textarea>
+            </div>
+            
+            <div class="flex justify-end space-x-4 mt-6">
+                <button type="button" id="cancelOrder" 
+                    class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-200">
+                    Annuler
+                </button>
+                <button type="submit" 
+                    class="px-4 py-2 bg-[#732F2F] text-white rounded-md hover:bg-[#5a2424] transition duration-200">
+                    Confirmer la commande
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('orderModal');
+        const orderButton = document.getElementById('orderButton');
+        const cancelOrderButton = document.getElementById('cancelOrder');
+
+        // Show modal when clicking order button
+        orderButton.addEventListener('click', function() {
+            modal.classList.remove('hidden');
+        });
+
+        // Hide modal when clicking cancel or outside
+        cancelOrderButton.addEventListener('click', function() {
+            modal.classList.add('hidden');
+        });
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+
+        // Cart quantity functionality
+        document.querySelectorAll('.quantity-decrease, .quantity-increase').forEach(button => {
+            button.addEventListener('click', function() {
+                const container = this.closest('.cart-item');
+                const input = container.querySelector('.quantity-input');
+                let value = parseInt(input.value);
+                
+                if (this.classList.contains('quantity-decrease')) {
+                    value = Math.max(1, value - 1);
+                } else {
+                    value += 1;
+                }
+                
+                input.value = value;
+                updateCartItem(container, value);
+            });
+        });
+
+        // Remove item functionality
+        document.querySelectorAll('.remove-item').forEach(button => {
+            button.addEventListener('click', function() {
+                const container = this.closest('.cart-item');
+                const productId = container.dataset.productId;
+                
+                fetch('/remove-from-cart/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ product_id: productId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        container.remove();
+                        document.getElementById('cart-total').textContent = `${data.total}€`;
+                        updateCartCount();
+                        window.location.href = '/cart/';
+                    }
+                });
+            });
+        });
+
+        // Order form submission
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch('/create-order/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert(data.error || 'Une erreur est survenue. Veuillez réessayer.');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue. Veuillez réessayer.');
+            });
+        });
+
+        // Helper functions
+        function updateCartItem(container, quantity) {
+            const productId = container.dataset.productId;
+            
+            fetch('/update-cart/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ product_id: productId, quantity: quantity })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    container.querySelector('.subtotal').textContent = `${data.item_total}€`;
+                    document.getElementById('cart-total').textContent = `${data.total}€`;
+                    updateCartCount();
+                }
+            });
+        }
+
+        function updateCartCount() {
+            const cartCountElement = document.getElementById('cart-count');
+            if (cartCountElement) {
+                const count = Array.from(document.querySelectorAll('.cart-item'))
+                    .reduce((sum, item) => sum + parseInt(item.querySelector('.quantity-input').value), 0);
+                cartCountElement.textContent = count;
+            }
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                document.cookie.split(';').forEach(cookie => {
+                    cookie = cookie.trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    }
+                });
+            }
+            return cookieValue;
+        }
+
+        const europeanCountries = {
+            "FR": {
+                name: "France",
+                cities: ["Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes", "Strasbourg", "Montpellier", "Bordeaux", "Lille"]
+            },
+            "DE": {
+                name: "Allemagne",
+                cities: ["Berlin", "Hamburg", "Munich", "Cologne", "Frankfurt", "Stuttgart", "Düsseldorf", "Dortmund", "Essen", "Leipzig"]
+            },
+            "BE": {
+                name: "Belgique",
+                cities: ["Bruxelles", "Anvers", "Gand", "Charleroi", "Liège", "Bruges", "Namur", "Louvain", "Mons", "Ostende"]
+            },
+            "CH": {
+                name: "Suisse",
+                cities: ["Zurich", "Genève", "Bâle", "Lausanne", "Berne", "Winterthour", "Lucerne", "Saint-Gall", "Lugano", "Bienne"]
+            },
+            "IT": {
+                name: "Italie",
+                cities: ["Rome", "Milan", "Naples", "Turin", "Palerme", "Gênes", "Bologne", "Florence", "Bari", "Catane"]
+            },
+            "ES": {
+                name: "Espagne",
+                cities: ["Madrid", "Barcelone", "Valence", "Séville", "Saragosse", "Málaga", "Murcie", "Palma", "Bilbao", "Alicante"]
+            },
+            "PT": {
+                name: "Portugal",
+                cities: ["Lisbonne", "Porto", "Vila Nova de Gaia", "Amadora", "Braga", "Queluz", "Coimbra", "Funchal", "Setúbal", "Aveiro"]
+            }
+        };
+
+        // Initialiser le select des pays
+        const countrySelect = document.getElementById('country');
+        Object.entries(europeanCountries).forEach(([code, data]) => {
+            const option = document.createElement('option');
+            option.value = code;
+            option.textContent = data.name;
+            countrySelect.appendChild(option);
+        });
+
+        // Gérer le changement de pays
+        countrySelect.addEventListener('change', function() {
+            const citySelect = document.getElementById('city');
+            citySelect.innerHTML = '<option value="">Sélectionnez une ville</option>';
+            
+            const selectedCountry = this.value;
+            if (selectedCountry && europeanCountries[selectedCountry]) {
+                europeanCountries[selectedCountry].cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        });
+
+        // Modifier la soumission du formulaire
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            const orderData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                country: formData.get('country'),  // Maintenant c'est le code du pays
+                city: formData.get('city'),
+                address: formData.get('address')
+            };
+            
+            fetch('/create-order/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert(data.error || 'Une erreur est survenue. Veuillez réessayer.');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue. Veuillez réessayer.');
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

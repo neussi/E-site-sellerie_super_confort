@@ -1,0 +1,14 @@
+<!-- templates/payment_success.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow p-6 text-center">
+        <h1 class="text-2xl font-bold text-green-600 mb-4">Paiement réussi !</h1>
+        <p class="mb-4">Votre commande #{{ order.id }} a été confirmée.</p>
+        <a href="/" class="bg-[#732F2F] text-white px-6 py-2 rounded-lg hover:bg-[#5A1E1E]">
+            Retour à l'accueil
+        </a>
+    </div>
+</div>
+{% endblock %}

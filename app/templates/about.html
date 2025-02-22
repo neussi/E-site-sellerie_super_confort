@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}À propos{% endblock %}
+
+{% block content %}
+<!-- Hero Section avec parallax -->
+<div class="relative h-[60vh] overflow-hidden">
+    <div class="absolute inset-0">
+        <img src="{% static 'images/1.png' %}" alt="Bannière" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-burgundy/60"></div>
+    </div>
+    <div class="relative h-full flex items-center">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-6xl font-['Cormorant_Garamond'] text-white mb-6">Notre Passion,<br>Votre Confort</h1>
+            <div class="w-24 h-1 bg-tan mx-auto"></div>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto px-4">
+    <!-- Section Notre Histoire -->
+    <div class="max-w-4xl mx-auto py-20">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-['Cormorant_Garamond'] text-burgundy">Notre Histoire</h2>
+            <div class="w-16 h-0.5 bg-burgundy mx-auto mt-4"></div>
+        </div>
+        <div class="prose prose-lg mx-auto text-center text-gray-600">
+            <p class="mb-6">
+                Sellerie Super Confort est une entreprise familiale basée à Montpellier, spécialisée dans la sellerie équestre haut de gamme. Depuis notre création, nous nous engageons à fournir des produits d'excellence pour le confort de votre cheval et votre satisfaction.
+            </p>
+            <p>
+                Notre expertise dans le domaine de la sellerie nous permet de vous proposer une sélection rigoureuse de produits de qualité, adaptés à vos besoins et à ceux de votre monture.
+            </p>
+        </div>
+    </div>
+
+    <!-- Section Nos Valeurs -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 py-20">
+        <div class="group">
+            <div class="bg-white rounded-xl shadow-xl p-10 transform transition duration-500 hover:-translate-y-2">
+                <div class="w-20 h-20 bg-burgundy rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-medal text-3xl text-cream"></i>
+                </div>
+                <h3 class="text-2xl font-['Cormorant_Garamond'] text-burgundy text-center mb-4">Qualité Premium</h3>
+                <p class="text-gray-600 text-center">Nous sélectionnons uniquement les meilleurs matériaux et produits pour garantir durabilité et confort.</p>
+            </div>
+        </div>
+
+        <div class="group">
+            <div class="bg-white rounded-xl shadow-xl p-10 transform transition duration-500 hover:-translate-y-2">
+                <div class="w-20 h-20 bg-burgundy rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-handshake text-3xl text-cream"></i>
+                </div>
+                <h3 class="text-2xl font-['Cormorant_Garamond'] text-burgundy text-center mb-4">Service Personnalisé</h3>
+                <p class="text-gray-600 text-center">Notre équipe expérimentée vous accompagne dans le choix des équipements adaptés à vos besoins.</p>
+            </div>
+        </div>
+
+        <div class="group">
+            <div class="bg-white rounded-xl shadow-xl p-10 transform transition duration-500 hover:-translate-y-2">
+                <div class="w-20 h-20 bg-burgundy rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-truck text-3xl text-cream"></i>
+                </div>
+                <h3 class="text-2xl font-['Cormorant_Garamond'] text-burgundy text-center mb-4">Livraison Rapide</h3>
+                <p class="text-gray-600 text-center">Nous assurons une livraison rapide et sécurisée de vos commandes partout en France.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Notre Engagement -->
+    <div class="relative py-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+            <div class="px-6">
+                <h2 class="text-4xl font-['Cormorant_Garamond'] text-burgundy mb-8">Notre Engagement</h2>
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-cream rounded-full flex items-center justify-center flex-shrink-0 mr-4">
+                            <i class="fas fa-check text-burgundy"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Expertise technique</h3>
+                            <p class="text-gray-600">Une connaissance approfondie de nos produits pour mieux vous conseiller.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-cream rounded-full flex items-center justify-center flex-shrink-0 mr-4">
+                            <i class="fas fa-heart text-burgundy"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Service client</h3>
+                            <p class="text-gray-600">Une équipe réactive et professionnelle à votre écoute.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-cream rounded-full flex items-center justify-center flex-shrink-0 mr-4">
+                            <i class="fas fa-star text-burgundy"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Sélection rigoureuse</h3>
+                            <p class="text-gray-600">Des produits choisis avec soin pour votre satisfaction.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Contact -->
+    <div class="bg-cream rounded-2xl p-16 text-center my-20">
+        <h2 class="text-4xl font-['Cormorant_Garamond'] text-burgundy mb-6">Une Question ?</h2>
+        <p class="text-gray-700 mb-8 max-w-2xl mx-auto">Notre équipe est à votre disposition pour répondre à toutes vos questions et vous accompagner dans vos choix.</p>
+        <a href="https://wa.me/33758969915" class="inline-flex items-center bg-[#732F2F] text-white px-8 py-4 rounded-full hover:bg-[#D4AF37] transition-all duration-300 transform hover:-translate-y-1">
+            <i class="fab fa-whatsapp text-xl mr-3"></i>
+            Contactez-nous sur WhatsApp
+        </a>
+    </div>
+</div>
+{% endblock %}
